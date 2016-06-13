@@ -1,0 +1,1455 @@
+snippet apigateway-account
+"${1:-}" : { 
+    "Type" : "AWS::ApiGateway::Account",
+	"Properties" : {
+	    "CloudWatchRoleArn" : "${2:-}"
+	}	
+}
+
+endsnippet
+
+
+snippet autoscaling-group-vpc
+
+"${1:-}" : {
+    "Type" : "AWS::AutoScaling::AutoScalingGroup",
+	"Properties" : {
+	    "AvailabilityZones" : [
+		${2:azs}
+	    ],
+		"LaunchConfigurationName" : ${3:"-"},
+		"MaxSize" : "${4:-}",
+		"MinSize" : "${5:-}",
+		"VPCZoneIdentifier" :  [ ${6:list of subnet ids} ],
+		"Tags" : [ {"Key" : "Name",
+		    "Value" : "${7:-}",
+		    "PropagateAtLaunch" : "True"} 
+	    ]
+	}
+}
+
+endsnippet
+
+snippet autoscaling-group
+
+"${1:-}" : {
+    "Type" : "AWS::AutoScaling::AutoScalingGroup",
+	"Properties" : {
+	    "AvailabilityZones" : [${2:"--"}],
+	    "LaunchConfigurationName" : ${3:"--"},
+	    "MaxSize" : "${4:--}",
+	    "MinSize" : "${5:--}",
+	    "Tags" : [ {"Key" : "Name",
+		"Value" : "${6:"--"}",
+		"PropagateAtLaunch" : "True"} 
+	    ]
+	}
+}
+
+endsnippet
+
+snippet availability-zone
+
+{"Fn::Join" : ["",[{"Ref" : "AWS::Region"},"${1:a}" ] ]}
+
+endsnippet
+
+snippet cloudformation-authentication
+
+"AWS::CloudFormation::Authentication": {
+    "${1:AccessCreds}": {
+	"type": "${2}",
+	    "buckets": [ "${3}" ],
+	    "roleName": "${4}",
+	    "accessKeyId": "${5}",
+	    "secretKey": "${6}",
+	    "uris": [ "${7}" ],
+	    "username": "${8}",
+	    "password": "${9}"
+    }
+}
+
+endsnippet
+
+snippet cloudformation-customresource
+
+"${1:customResource}": {
+    "Type": "AWS::CloudFormation::CustomResource",
+	"Version": "1.0",
+	"Properties": {
+	    "ServiceToken": "${2}"
+	}
+} 
+
+endsnippet
+
+snippet cloudformation-stack
+
+"${1:cloudFormationStack}": {
+    "Type": "AWS::CloudFormation::Stack",
+	"Properties": {
+	    "NotificationARNs": [ "${2}" ],
+	    "Parameters": { ${3} },
+	    "TemplateURL": "${4}",
+	    "TimeoutInMinutes": "${5}"
+	}
+}
+
+endsnippet
+
+snippet cloudformation-init
+
+"AWS::CloudFormation::Init": {
+    "config": {
+	"packages": {
+	},
+	    "groups": {
+	    },
+	    "users": {
+	    },
+	    "sources": {
+	    },
+	    "files": {
+	    },
+	    "commands": {
+	    },
+	    "services": {
+	    }
+    }
+}
+
+endsnippet
+
+snippet cloudformation-waitconditionhandle
+
+"${1:waitConditionHandle}": {
+    "Type" : "AWS::CloudFormation::WaitConditionHandle",
+	"Properties" : {
+	}
+}
+
+endsnippet
+
+snippet cloudformation-waitcondition
+
+"${1:waitCondition}": {
+    "Type": "AWS::CloudFormation::WaitCondition",
+	"Properties": {
+	    "Count": "${2}",
+	    "Handle": "${3}",
+	    "Timeout": "${4}"
+	}
+}
+
+endsnippet
+
+snippet cloudfront-distribution
+
+"${1:cloudfrontDistribution}": {
+    "Type": "AWS::CloudFront::Distribution",
+	"Properties": {
+	    "DistributionConfig": ${2}
+	}
+}
+
+endsnippet
+
+snippet cloudtrail
+
+"${1:cloudTrail}": {
+    "Type": "AWS::CloudTrail::Trail",
+	"Properties": {
+	    "S3BucketName": "${2}",
+	    "IncludeGlobalServiceEvents": "${3:true | false}",
+	    "IsLogging": "${4:true | false}",
+	    "S3KeyPrefix": "${5}",
+	    "SnsTopicName": "${6}"
+	}
+}
+
+endsnippet
+
+snippet cloudwatch-alarm
+
+"${1:cloudWatchAlarm}": {
+    "Type": "AWS::CloudWatch::Alarm",
+	"Properties": {
+	    "MetricName": "${2}",
+	    "Namespace": "${3}",
+	    "ComparisonOperator": "${4}",
+	    "EvaluationPeriods": "${5}",
+	    "Period": "${6}",
+	    "Statistic": "${7}",
+	    "Threshold": "${8}",
+	    "ActionsEnabled": "${9:true | false}",
+	    "AlarmActions": [ "${10}" ],
+	    "AlarmDescription": "${11}",
+	    "AlarmName": "${12}",
+	    "Dimensions": [ "${13}" ],
+	    "InsufficientDataActions": [ "${14}" ],
+	    "OKActions": [ "${15}" ],
+	    "Unit": "${16}"
+	}
+}
+
+endsnippet
+
+snippet dynamodb-table
+
+"${1:dynamodbTable}": {
+    "Type": "AWS::DynamoDB::Table",
+	"Properties": {
+	    "AttributeDefinitions": [ ${2} ],
+	    "GlobalSecondaryIndexes": [ ${3} ],
+	    "KeySchema": [ ${4} ],
+	    "LocalSecondaryIndexes": [ ${5} ],
+	    "ProvisionedThroughput": { ${6} },
+	    "TableName": "${7}"
+	}
+}
+
+endsnippet
+
+snippet ec2-instance
+
+"${1:-}": {
+    "Type": "AWS::EC2::Instance",
+	"Properties": {
+	    "KeyName": ${2:-},
+	    "DisableApiTermination": "${3:-}",
+	    "ImageId": { ${4:-} },
+	    "InstanceType": "${5:-}",
+	    "Monitoring": "${6:true|false}",
+	    "SecurityGroupIds" : [${7:-}],
+	    "Tags": [
+	    {
+		"Key": "${8:-}",
+		"Value": "${9:-}"
+	    }
+	    ],
+		"UserData": {
+		    "Fn::Base64": {
+			"Fn::Join": [
+			    "",
+			[
+			    "#!/bin/bash -ex",
+			"${10:-}"
+			    ]
+			    ]
+		    }
+		}
+	}
+}
+endsnippet
+
+snippet ec2-volume
+
+"${1:ec2Volume}": {
+    "Type": "AWS::EC2::Volume",
+	"Properties": {
+	    "AutoEnableIO": "${2:true|false}",
+	    "AvailabilityZone": "${3:-}",
+	    "Encrypted": "${4:true|false}",
+	    "KmsKeyId": "${5:-}",
+	    "Size": "${6:-}",
+	    "SnapshotId": "${7:snap-}",
+	    "Tags": [
+	    {
+		"Key": "${8:-}",
+		"Value": "${9:-}"
+	    }
+	    ],
+		"VolumeType" : "${10:standard|io1|gp2}"
+	}
+}
+
+endsnippet
+
+snippet eip-vpc
+
+"${1:eipName}": {
+    "Type": "AWS::EC2::EIP",
+	"Properties": {
+	    "Domain": "vpc",
+	    "InstanceId": ${2:"--"}
+	}
+}
+
+endsnippet
+
+snippet elastic-load-balancer-vpc
+
+"${1:-}": {
+    "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+	"Properties": {
+	    "Listeners" : [ ${2:-} ],
+	    "SecurityGroups" : [ ${3:-} ],
+	    "Subnets" : [ ${4:-} ],
+	    "Tags": [
+	    {
+		"Key": "${5:-}",
+		"Value": "${6:-}"
+	    }
+	    ]
+	}
+}
+endsnippet
+
+snippet elastic-load-balancer-vpc-internal
+
+"${1:-}": {
+    "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+	"Properties": {
+	    "Listeners" : [ ${2:-} ],
+	    "Scheme" : "internal",
+	    "SecurityGroups" : [ ${3:-} ],
+	    "Subnets" : [ ${4:-} ],
+	    "Tags": [
+	    {
+		"Key": "${5:-}",
+		"Value": "${6:-}"
+	    }
+	    ]
+	}
+}
+endsnippet
+
+snippet elastic-load-balancer
+
+"${1:-}": {
+    "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+	"Properties": {
+	    "AvailabilityZones" : [ "${2:-}" ],
+	    "Listeners" : [ ${3:-} ],
+	    "Tags": [
+	    {
+		"Key": "${4:-}",
+		"Value": "${5:-}"
+	    }
+	    ]
+	}
+}
+endsnippet
+
+snippet elasticache-cachecluster
+
+"${1:elasticacheCacheCluster}": {
+    "Type": "AWS::ElastiCache::CacheCluster",
+	"Properties":
+	{
+	    "AutoMinorVersionUpgrade": "${2:true | false}",
+	    "AZMode": "${3}",
+	    "CacheNodeType": "${4}",
+	    "CacheParameterGroupName": "${5}",
+	    "CacheSecurityGroupNames": [ "${6}" ],
+	    "CacheSubnetGroupName": "${7}",
+	    "ClusterName": "${8}",
+	    "Engine": "${9}",
+	    "EngineVersion": "${10}",
+	    "NotificationTopicArn": "${11}",
+	    "NumCacheNodes": "${12}",
+	    "Port": "${13}",
+	    "PreferredAvailabilityZone": "${14}",
+	    "PreferredAvailabilityZones": [ "${15}" ],
+	    "PreferredMaintenanceWindow": "${16}",
+	    "SnapshotArns": ["${17}" ],
+	    "SnapshotRetentionLimit": "${18}",
+	    "SnapshotWindow": "${19}",
+	    "VpcSecurityGroupIds": [ "${20}" ]
+	}
+}
+
+endsnippet
+
+snippet elasticache-parametergroup
+
+"${1:elastiicacheParameterGroup}": {
+    "Type": "AWS::ElastiCache::ParameterGroup",
+	"Properties": {
+	    "CacheParameterGroupFamily": "${2}",
+	    "Description": "${3}",
+	    "Properties": { "${4}": "${5}" }
+	}
+}
+
+endsnippet
+
+snippet elasticache-securitygroup
+
+"${1:elasticacheSecurityGroup}": {
+    "Type": "AWS::ElastiCache::SecurityGroup",
+	"Properties":
+	{
+	    "Description": "${2}"
+	}
+}
+
+endsnippet
+
+snippet elasticache-securitygroupingress
+
+"${1:elasticacheSecurityGroupIngress}": {
+    "Type": "AWS::ElastiCache::SecurityGroupIngress",
+	"Properties":
+	{
+	    "CacheSecurityGroupName": "${2}",
+	    "EC2SecurityGroupName": "${3}",
+	    "EC2SecurityGroupOwnerId": "${4}"
+	}
+}
+
+endsnippet
+
+snippet elasticache-subnetgroup
+
+"${1:elasticacheSubnetGroup}": {
+    "Type": "AWS::ElastiCache::SubnetGroup",
+	"Properties": {
+	    "Description": "${2}",
+	    "SubnetIds": [ "${3}" ]
+	}
+}
+
+endsnippet
+
+snippet elasticbeanstalk-application
+
+"${1:elasticbeanstalkApplication}": {
+    "Type": "AWS::ElasticBeanstalk::Application",
+	"Properties": {
+	    "ApplicationName": "${2}",
+	    "Description": "${3}"
+	}
+}
+
+endsnippet
+
+snippet elasticbeanstalk-applicationversion
+
+"${1:elasticbeanstalkApplicationVersion}": {
+    "Type": "AWS::ElasticBeanstalk::ApplicationVersion",
+	"Properties": {
+	    "ApplicationName": "${2}",
+	    "Description": "${3}",
+	    "SourceBundle": { ${4} }
+	}
+}
+
+endsnippet
+
+snippet elasticbeanstalk-configurationtemplate
+
+"${1:elasticbeanstalkConfigurationTemplate}": {
+    "Type": "AWS::ElasticBeanstalk::ConfigurationTemplate",
+	"Properties": {  
+	    "ApplicationName": "${2}",
+	    "Description": "${3}",
+	    "EnvironmentId": "${4}",
+	    "OptionSettings": [ ${5} ],
+	    "SolutionStackName": "${6}",
+	    "SourceConfiguration": ${7}
+	} 
+}
+
+endsnippet
+
+snippet elasticbeanstalk-environment
+
+"${1:elasticbeanstalkEnvironment}": {
+    "Type": "AWS::ElasticBeanstalk::Environment",
+	"Properties": {
+	    "ApplicationName": "${2}",
+	    "CNAMEPrefix": "${3}",
+	    "Description":  "${4}",
+	    "EnvironmentName":  "${5}",
+	    "OptionSettings": [ ${6} ],
+	    "SolutionStackName": "${7}",
+	    "TemplateName": "${8}",
+	    "Tier": "${9}",
+	    "VersionLabel": "${10}"
+	}
+}
+
+endsnippet
+
+snippet elb-listener
+
+{
+    "InstancePort" : "${1:-}",
+	"InstanceProtocol" : "${2:HTTP|HTTPS|TCP|SSL}",
+	"LoadBalancerPort" : "${3:-}",
+	"Protocol" : "${4:HTTP|HTTPS|TCP|SSL}"
+}
+endsnippet
+
+snippet find-in-map
+
+"Fn::FindInMap": [
+"${1:map}",
+    "${2:selector}",
+    "${3:value}"
+    ]
+
+    endsnippet
+
+    snippet get-attr
+
+{ "Fn::GetAtt" : [ "${1:logicalNameOfResource}", "${2:attributeName}" ]}
+
+endsnippet
+
+snippet iam-accesskey
+
+"${1:iamAccessKey}": {
+    "Type": "AWS::IAM::AccessKey",
+	"Properties": {
+	    "Status": "${2}",
+	    "UserName": "${3}",
+	    "Serial": "${4}"
+	}
+}
+
+endsnippet
+
+snippet iam-group
+
+"${1:iamGroup}": {
+    "Type": "AWS::IAM::Group",
+	"Properties": {
+	    "Path": "${2}",
+	    "Policies": [ "${3}" ]
+	}
+}
+
+endsnippet
+
+snippet iam-instanceprofile
+
+"${1:iamInstanceProfile}": {
+    "Type": "AWS::IAM::InstanceProfile",
+	"Properties": {
+	    "Path": "${2:/}",
+	    "Roles": [ "${3}" ]
+	}
+}
+
+endsnippet
+
+snippet iam-role
+
+"${1:iamRole}": {
+    "Type": "AWS::IAM::Role",
+	"Properties": {
+	    "AssumeRolePolicyDocument": { ${2} },
+	    "Path": "${3}",
+	    "Policies": [ ${4} ]
+	}
+}
+
+endsnippet
+
+snippet iam-policy
+
+"${1:iamPolicy}": {
+    "Type": "AWS::IAM::Policy",
+	"Properties": {
+	    "Groups" : [ "${2}" ],
+	    "PolicyDocument" : {${3}},
+	    "PolicyName" : "${4}",
+	    "Roles" : [ "${5}" ],
+	    "Users" : [ "${6}" ]
+	}
+}
+
+endsnippet
+
+snippet iam-user
+
+"${1:iamUser}": {
+    "Type": "AWS::IAM::User",
+	"Properties": {
+	    "Path": "${2:/}",
+	    "Groups": [ "${3}" ],
+	    "LoginProfile": { "Password" : "${4}" },
+	    "Policies": [ ${5} ]
+	}
+}
+
+endsnippet
+
+snippet iam-usertogroupaddition
+
+"${1:iamUserToGroupAddition}": {
+    "Type": "AWS::IAM::UserToGroupAddition",
+	"Properties": {
+	    "GroupName": "${2}",
+	    "Users": [ "${3}" ]
+	}
+}
+
+endsnippet
+
+snippet internet-gateway
+
+"${1:igwName}": {
+    "Type": "AWS::EC2::InternetGateway",
+	"Properties": {
+	    "Tags": [${2:"-"}]
+	}
+},
+    "AttachGateway": {
+	"Type": "AWS::EC2::VPCGatewayAttachment",
+	"Properties": {
+	    "VpcId": ${3:"--"},
+	    "InternetGatewayId": { "Ref": "${4:igwName}" }
+	}
+    }
+
+endsnippet
+
+snippet join
+
+{"Fn::Join" : ["",[ ${1:"prefix"}, ${2:"suffix"} ] ]}
+
+endsnippet
+
+snippet kinesis-stream
+
+"${1:kinesisStream}": {
+    "Type": "AWS::Kinesis::Stream",
+	"Properties": {
+	    "ShardCount": "${2}"
+	}
+}
+
+endsnippet
+
+snippet launch-config
+
+"${1:launchConfigName}": {
+    "Type" : "AWS::AutoScaling::LaunchConfiguration",
+	"Properties" : {
+	    "IamInstanceProfile" : ${2:"--"},
+	    "ImageId" : ${3:"--"},
+	    "InstanceMonitoring" : ${4:"--"},
+	    "InstanceType" : "${5:--}",
+	    "KeyName" : ${6:"--"},
+	    "SecurityGroups" : [ ${7:"--"} ],
+	    "UserData" : {
+		"Fn::Base64": 
+		{   "Fn::Join": [
+		    "",
+		    [
+			"#!/bin/bash -ex",
+		    "${8:-}"
+			]
+
+			]                 
+		}
+	    }
+	}
+}
+
+endsnippet
+
+snippet logs-loggroup
+
+"${1:logLogGroup}": {
+    "Type": "AWS::Logs::LogGroup",
+	"Properties": {
+	    "RetentionInDays": "${2}"
+	}
+}
+
+endsnippet
+
+snippet logs-metricfilter
+
+"${1:logsMetricFilter}": {
+    "Type": "AWS::Logs::MetricFilter",    
+	"Properties": {
+	    "FilterPattern": [ "${2}" ],
+	    "LogGroupName": "${3}",
+	    "MetricTransformations": [ ${4} ]
+	}
+}
+
+endsnippet
+
+snippet map-item
+
+"${1:selector}": {
+    "${2:key}": "${3:val}"
+}
+
+endsnippet
+
+snippet map
+
+"${1:mapName}": {
+    "${2:selector}": {
+	"${3:key}": "${4:val}"
+    },
+	"${5:selector}": {
+	    "${6:key}": "${7:val}"
+	}
+}
+
+endsnippet
+
+snippet opsworks-app
+
+"${1:opsworksApp}": {
+    "Type": "AWS::OpsWorks::App",
+	"Properties": {
+	    "Name": "${2}",
+	    "StackId": "${3}",
+	    "Type": "${4}",
+	    "AppSource": { ${5} },
+	    "Attributes": { ${6}:${7} },
+	    "Description": "${8}",
+	    "Domains":  [ "${9}" ],
+	    "EnableSsl": "${10:true | false}",
+	    "Shortname": "${11}",
+	    "SslConfiguration": { ${12} }
+	}
+}
+
+endsnippet
+
+snippet opsworks-elasticloadbalancerattachment
+
+"${1:opsworksElasticLoadBalancerAttachment}": {
+    "Type": "AWS::OpsWorks::ElasticLoadBalancerAttachment",
+	"Properties": {
+	    "ElasticLoadBalancerName": "${2}",
+	    "LayerId": "${3}"
+	}
+}
+
+endsnippet
+
+snippet opsworks-instance
+
+"${1:opsworksInstance}": {
+    "Type": "AWS::OpsWorks::Instance",
+	"Properties": {
+	    "InstanceType": "${2}",
+	    "LayerIds":  [ "${3}" ],
+	    "StackId": "${4}",
+	    "AmiId": "${5}",
+	    "Architecture": "${6}",
+	    "AutoScalingType": "${7}",
+	    "AvailabilityZone": "${8}",
+	    "InstallUpdatesOnBoot": "${9:true | false}",
+	    "Os": "${10}",
+	    "RootDeviceType": "${11}",
+	    "SshKeyName": "${12}",
+	    "SubnetId": "${13}",
+	    "TimeBasedAutoScaling": { ${14} }
+	}
+}
+
+endsnippet
+
+snippet opsworks-layer
+
+"${1:opsworksLayer}": {
+    "Type": "AWS::OpsWorks::Layer",
+	"Properties": {
+	    "AutoAssignElasticIps": "${2:true | false}",
+	    "AutoAssignPublicIps": "${3:true | false}",
+	    "EnableAutoHealing": "${4:true | false}",
+	    "Name": "${5}",
+	    "Shortname": "${6}",
+	    "StackId": "${7}",
+	    "Type": "${8}",
+	    "Attributes": { "${9}":"${10}" },
+	    "CustomInstanceProfileArn": "${11}",
+	    "CustomRecipes": ${12},
+	    "CustomSecurityGroupIds":  [ "${13}" ],
+	    "InstallUpdatesOnBoot": "${14:true | false}",
+	    "LoadBasedAutoScaling": { ${15} },
+	    "Packages": [ "${16}" ],
+	    "VolumeConfigurations": [ ${17} ]
+	}
+}
+
+endsnippet
+
+snippet opsworks-stack
+
+"${1:opsworksStack}": {
+    "Type": "AWS::OpsWorks::Stack",
+	"Properties": {
+	    "DefaultInstanceProfileArn": "${2}",
+	    "Name": "${3}",
+	    "ServiceRoleArn": "${4}",
+	    "Attributes": { "${5}":"${6}" },
+	    "ChefConfiguration": { ${7} },
+	    "ConfigurationManager": { ${8} },
+	    "CustomCookbooksSource": { ${9} },
+	    "CustomJson": { ${10} },
+	    "DefaultAvailabilityZone": "${11}",
+	    "DefaultOs": "${12}",
+	    "DefaultRootDeviceType": "${13}",
+	    "DefaultSshKeyName": "${14}",
+	    "DefaultSubnetId": "${15}",
+	    "HostnameTheme": "${16}",
+	    "UseCustomCookbooks": "${17:true | false}",
+	    "UseOpsworksSecurityGroups": "${18:true | false}",
+	    "VpcId": "${19}"
+	}
+}
+
+endsnippet
+
+snippet output
+
+"${1:name}" : {
+    "Value" : ${2:-}
+}
+
+endsnippet
+
+snippet parameter-type-availabilityzone-name-list
+
+List<AWS::EC2::AvailabilityZone::Name>
+
+endsnippet
+
+snippet parameter-type-availabilityzone-name
+
+AWS::EC2::AvailabilityZone::Name
+
+endsnippet
+
+snippet parameter-type-ec2-image-id-list
+
+List<AWS::EC2::Image::Id>
+
+endsnippet
+
+snippet parameter-type-ec2-image-id
+
+AWS::EC2::Image::Id
+
+endsnippet
+
+snippet parameter-type-ec2-instance-id-list
+
+List<AWS::EC2::Instance::Id>
+
+endsnippet
+
+snippet parameter-type-ec2-instance-id
+
+AWS::EC2::Instance::Id
+
+endsnippet
+
+snippet parameter-type-ec2-security-group-name-list
+
+List<AWS::EC2::SecurityGroup::GroupName>
+
+endsnippet
+
+snippet parameter-type-ec2-security-group-name
+
+AWS::EC2::SecurityGroup::GroupName
+
+endsnippet
+
+snippet parameter-type-ec2-volume-id-list
+
+List<AWS::EC2::Volume::Id>
+
+endsnippet
+
+snippet parameter-type-ec2-volume-id
+
+AWS::EC2::Volume::Id
+
+endsnippet
+
+snippet parameter-type-keypair-keyname
+
+AWS::EC2::KeyPair::KeyName
+
+endsnippet
+
+snippet parameter-type-route53-hostedzone-id-list
+
+List<AWS::Route53::HostedZone::Id>
+
+endsnippet
+
+snippet parameter-type-route53-hostedzone-id
+
+AWS::Route53::HostedZone::Id
+
+endsnippet
+
+snippet parameter-type-securitygroup-id-list
+
+List<AWS::EC2::SecurityGroup::Id>
+
+endsnippet
+
+snippet parameter-type-securitygroup-id
+
+AWS::EC2::SecurityGroup::Id
+
+endsnippet
+
+snippet parameter-type-subnet-id-list
+
+List<AWS::EC2::Subnet::Id>
+
+endsnippet
+
+snippet parameter-type-subnet-id
+
+AWS::EC2::Subnet::Id
+
+endsnippet
+
+snippet parameter-type-vpc-id-list
+
+List<AWS::EC2::VPC::Id>
+
+endsnippet
+
+snippet parameter-type-vpc-id
+
+AWS::EC2::VPC::Id
+
+endsnippet
+
+snippet parameter
+
+"${1:paramName}": {
+    "Description": "${2:-}",
+	"Type": "${3:[String|Number|CommaDelimitedList]}",
+	"Default": "${4:-}"
+}
+
+endsnippet
+
+snippet rds-dbinstance
+
+"${1:rdsDBInstance}": {
+    "Type": "AWS::RDS::DBInstance",
+	"Properties": {
+	    "AllocatedStorage": "${2}",
+	    "DBInstanceClass": "${3}",
+	    "AllowMajorVersionUpgrade": "${4:true | false}",
+	    "AutoMinorVersionUpgrade": "${5:true | false}",
+	    "AvailabilityZone": "${6}",
+	    "BackupRetentionPeriod": "${7}",
+	    "CharacterSetName": "${8}",
+	    "DBInstanceIdentifier": "${9}",
+	    "DBName": "${10}",
+	    "DBParameterGroupName": "${11}",
+	    "DBSecurityGroups": [ "${12}" ],
+	    "DBSnapshotIdentifier": "${13}",
+	    "DBSubnetGroupName": "${14}",
+	    "Engine": "${15}",
+	    "EngineVersion": "${16}",
+	    "Iops": "${17}",
+	    "KmsKeyId": "${18}",
+	    "LicenseModel": "${19}",
+	    "MasterUsername": "${20}",
+	    "MasterUserPassword": "${21}",
+	    "MultiAZ": "${22:true | false}",
+	    "OptionGroupName": "${23}",
+	    "Port": "${24}",
+	    "PreferredBackupWindow": "${25}",
+	    "PreferredMaintenanceWindow": "${26}",
+	    "PubliclyAccessible": "${27:true | false}",
+	    "SourceDBInstanceIdentifier": "${28}",
+	    "StorageEncrypted": "${29:true | false}",
+	    "StorageType": "${30}",
+	    "Tags": [ ${31} ],
+	    "VPCSecurityGroups": [ "${32}" ]
+	}
+}
+
+endsnippet
+
+snippet rds-dbparametergroup
+
+"${1:rdsDBParameterGroup}": {
+    "Type": "AWS::RDS::DBParameterGroup",
+	"Properties": {
+	    "Description": "${2}",
+	    "Family": "${3}",
+	    "Parameters": {${4}},
+	    "Tags": [ ${5} ]
+	}
+}
+
+endsnippet
+
+snippet rds-dbsecuritygroup
+
+"${1:rdsDBSecurityGroup}": {
+    "Type": "AWS::RDS::DBSecurityGroup",
+	"Properties": {
+	    "EC2VpcId": { ${2} },
+	    "DBSecurityGroupIngress": [ ${3} ],
+	    "GroupDescription": "${4}",
+	    "Tags": [ ${5} ]
+	}
+}
+
+endsnippet
+
+snippet rds-dbsecuritygroupingress
+
+{
+    "CIDRIP": "${1}",
+	"DBSecurityGroupName": "${2}",
+	"EC2SecurityGroupId": "${3}",
+	"EC2SecurityGroupName": "${4}",
+	"EC2SecurityGroupOwnerId": "${5}"
+}
+
+endsnippet
+
+snippet rds-eventsubscription
+
+"${1:rdsEventSubscription}": {
+    "Type": "AWS::RDS::EventSubscription",
+	"Properties": {
+	    "Enabled": "${2:true | false}",
+	    "EventCategories": [ "${3}" ],
+	    "SnsTopicArn": "${4}",
+	    "SourceIds": [ "${5}" ],
+	    "SourceType ": "${6}"
+	}
+}
+
+endsnippet
+
+snippet rds-dbsubnetgroup
+
+"${1:rdsDBSubnetGroup}": {
+    "Type": "AWS::RDS::DBSubnetGroup",
+	"Properties": {
+	    "DBSubnetGroupDescription": "${2}",
+	    "SubnetIds": [ "${3}" ],
+	    "Tags": [ ${4} ]
+	}
+}
+
+endsnippet
+
+snippet redshift-cluster
+
+"${1:redshiftCluster}": {
+    "Type": "AWS::Redshift::Cluster",
+	"Properties": {
+	    "AllowVersionUpgrade": "${2:true | false}",
+	    "AutomatedSnapshotRetentionPeriod": "${3}",
+	    "AvailabilityZone": "${4}",
+	    "ClusterParameterGroupName": "${5}",
+	    "ClusterSecurityGroups": [ "${6}" ],
+	    "ClusterSubnetGroupName": "${7}",
+	    "ClusterType": "${8}",
+	    "ClusterVersion": "${9}",
+	    "DBName": "${10}",
+	    "ElasticIp": "${11}",
+	    "Encrypted": "${12:true | false}",
+	    "HsmClientCertificateIdentifier": "${13}",
+	    "HsmConfigurationIdentifier": "${14}",
+	    "MasterUsername": "${15}",
+	    "MasterUserPassword": "${16}",
+	    "NodeType": "${17}",
+	    "NumberOfNodes": "${18}",
+	    "OwnerAccount": "${19}",
+	    "Port": "${20}",
+	    "PreferredMaintenanceWindow": "${21}",
+	    "PubliclyAccessible": "${22:true | false}",
+	    "SnapshotClusterIdentifier": "${23}",
+	    "SnapshotIdentifier": "${24}",
+	    "VpcSecurityGroupIds": [ "${25}" ]
+	}
+}
+
+endsnippet
+
+snippet redshift-clusterparametergroup
+
+"${1:redshiftClusterParameterGroup}": {
+    "Type": "AWS::Redshift::ClusterParameterGroup",
+	"Properties": {
+	    "Description": "${2}",
+	    "ParameterGroupFamily": "${3}",
+	    "Parameters": [ ${4} ]
+	}
+}
+
+endsnippet
+
+snippet redshift-clustersecuritygroup
+
+"${1:redshiftClusterSecurityGroup}": {
+    "Type": "AWS::Redshift::ClusterSecurityGroup",
+	"Properties": {
+	    "Description": "${2}"
+	}
+}
+
+endsnippet
+
+snippet redshift-clustersecuritygroupingress
+
+"${1:redshiftClusterSecurityGroupIngress}": {
+    "Type": "AWS::Redshift::ClusterSecurityGroupIngress",
+	"Properties": {
+	    "ClusterSecurityGroupName": "${2}",
+	    "CIDRIP": "${3}",
+	    "EC2SecurityGroupName": "${4}",
+	    "EC2SecurityGroupOwnerId": "${5}"
+	}
+}
+
+endsnippet
+
+snippet redshift-clustersubnetgroup
+
+"${1:redshiftClusterSubnetGroup}": {
+    "Type": "AWS::Redshift::ClusterSubnetGroup",
+	"Properties": {
+	    "Description": "${2}",
+	    "SubnetIds": [ "${3}" ]
+	}
+}
+
+endsnippet
+
+snippet ref
+
+{ "Ref": "${1:logicalName}" }
+
+endsnippet
+
+snippet resource
+
+"${1:resourceName}": {
+    "Description": "${2:-}",
+	"Type": "${3:-}",
+	"Properties": "${4:-}"
+}
+
+endsnippet
+
+snippet route-table-assoc
+
+"${1:routeTableAssocName"}: {
+    "Type": "AWS::EC2::SubnetRouteTableAssociation",
+	"Properties": {
+	    "SubnetId": ${2:"--"},
+	    "RouteTableId": ${3:"--"}
+	}
+}
+
+endsnippet
+
+snippet route-table
+
+"${1:routeTableName}": {
+    "Type": "AWS::EC2::RouteTable",
+	"Properties": {
+	    "VpcId": ${2:"--"},
+	    "Tags": [${3:"--"}]
+	}
+}
+
+endsnippet
+
+snippet route
+
+"${1:routeName}": {
+    "Type": "AWS::EC2::Route",
+	"Properties": {
+	    "RouteTableId": ${2:"--"},
+	    "DestinationCidrBlock": "${3:"--"},
+	    "GatewayId": ${4:"--"}
+	}
+}
+
+endsnippet
+
+snippet route53-healthcheck
+
+"${1:route53HealthCheck}": {
+    "Type": "AWS::Route53::HealthCheck",
+	"Properties": {
+	    "HealthCheckConfig": { ${2} },
+	    "HealthCheckTags": [ ${3} ]
+	}
+}
+
+endsnippet
+
+snippet route53-hostedzone
+
+"${1}": {
+    "Type": "AWS::Route53::HostedZone",
+	"Properties": {
+	    "Name": "{$2}",
+	    "VPCs": "{$3}",
+	    "HostedZoneConfig": {{$4}},
+	    "HostedZoneTags": [{$5}]
+	}
+}
+
+
+endsnippet
+
+snippet route53-recordsetgroup
+
+"${1:route53RSGroup}": {
+    "Type": "AWS::Route53::RecordSetGroup",
+	"Properties": {
+	    "HostedZoneId": "${2}",
+	    "HostedZoneName": "${3}",
+	    "RecordSets": [ {${4}} ],
+	    "Comment": "${5}"
+	}
+}
+
+endsnippet
+
+snippet route53-recordset
+
+"${1:route53RS}": {
+    "Type": "AWS::Route53::RecordSet",
+	"Properties": {
+	    "Name": "${2}",
+	    "Type": "${3:A | AAAA | CNAME | MX | NS | PTR | SOA | SPF | SRV | TXT}",
+	    "AliasTarget": {${4}},
+	    "Comment": "${5}",
+	    "Failover": "${6}",
+	    "GeoLocation": {${7}},
+	    "HealthCheckId": "${8}",
+	    "HostedZoneId": "${9}",
+	    "HostedZoneName": "${10}",
+	    "Region": "${11}",
+	    "ResourceRecords": [ "${12}" ],
+	    "SetIdentifier": "${13}",
+	    "TTL": "${14}",
+	    "Weight": "${15}"
+	}
+}
+
+endsnippet
+
+snippet s3-bucket
+
+"${1:s3Bucket}": {
+    "Type": "AWS::S3::Bucket",
+	"Properties": {
+	    "AccessControl": "${2:Private | PublicRead | PublicReadWrite | AuthenticatedRead | LogDeliveryWrite | BucketOwnerRead | BucketOwnerFullControl}",
+	    "BucketName": "${3}",
+	    "CorsConfiguration": {${4}},
+	    "LifecycleConfiguration": {${5}},
+	    "NotificationConfiguration": {${6}},
+	    "VersioningConfiguration": {${7}},
+	    "WebsiteConfiguration": {${8}},
+	    "Tags": [${9}] 
+	}
+}
+
+endsnippet
+
+snippet s3-bucketpolicy
+
+"${1:s3BucketPolicy}": {
+    "Type": "AWS::S3::BucketPolicy",
+	"Properties": {
+	    "Bucket" : "${2}",
+	    "PolicyDocument" : {${3}}
+	}
+}
+
+endsnippet
+
+snippet security-group
+
+"${1:secGroupName}" : {
+    "Type" : "AWS::EC2::SecurityGroup",
+	"Properties" : {
+	    "GroupDescription" : "${2:-}",
+	    "SecurityGroupIngress" : [ 
+		${3:--insert rules--}
+	    ],
+		"VpcId" : ${4:ref-to-vpc},
+		"Tags" :  [ ${5:insert tag} ]
+	}
+}
+
+endsnippet
+
+snippet security-group-egress-block
+
+"SecurityGroupEgress" : [ 
+${1:--insert rules--}
+]
+
+endsnippet
+
+snippet select-list
+
+{ "Fn::Select" : [ ${1:0|1|etc}, {"Ref": "${2:list_name}"} ] }
+
+endsnippet
+
+snippet security-group-ingress-cidr
+
+{ "IpProtocol" : "${1:[tcp|udp|ip]}", "FromPort" : "${2:-}", "ToPort" : "${3:-}", "CidrIp" : "${4:-}" }
+
+endsnippet
+
+snippet security-group-egress-cidr
+
+{ "IpProtocol" : "${1:[tcp|udp|ip]}", "FromPort" : "${2:-}", "ToPort" : "${3:-}", "CidrIp" : "${4:-}" }
+
+endsnippet
+
+snippet sns-topic
+
+"${1:snsTopic}": {
+    "Type": "AWS::SNS::Topic",
+	"Properties": {
+	    "DisplayName": "${2}",
+	    "Subscription": [ ${3} ],
+	    "TopicName": "${4}"
+	}
+}
+
+endsnippet
+
+snippet sns-topicpolicy
+
+"${1:snsTopicPolicy}": {
+    "Type": "AWS::SNS::TopicPolicy",
+	"Properties":
+	{
+	    "PolicyDocument": {${2}},
+	    "Topics": [ {${3}} ]
+	}
+}
+
+endsnippet
+
+snippet sqs-queue
+
+"${1:sqsQueue}": {
+    "Type": "AWS::SQS::Queue",
+	"Properties": {
+	    "DelaySeconds": "${2}",
+	    "MaximumMessageSize": "${3}",
+	    "MessageRetentionPeriod": "${4}",
+	    "QueueName": "${5}",
+	    "ReceiveMessageWaitTimeSeconds": "${6}",
+	    "RedrivePolicy": {${7}},
+	    "VisibilityTimeout": "${8}"
+	}
+}
+
+endsnippet
+
+snippet sqs-queuepolicy
+
+"${1:sqsQueuePolicy}": {
+    "Type": "AWS::SQS::QueuePolicy",
+	"Properties": {
+	    "PolicyDocument": {${2}},
+	    "Queues": [ ${3} ]
+	}
+}
+
+endsnippet
+
+snippet start
+
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+	"Description": "${1}",
+	"Metadata": {
+
+	},
+	"Parameters": {
+
+	},
+	"Mappings": {
+
+	},
+	"Conditions": {
+
+	},
+	"Resources": {
+
+	},
+	"Outputs": {
+
+	}
+}
+
+
+endsnippet
+
+snippet subnet
+
+"${1:subnetName}": {
+    "Type": "AWS::EC2::Subnet",
+	"Properties": {
+	    "AvailabilityZone": ${2:"-"},
+	    "VpcId": ${3:"-"},
+	    "CidrBlock": ${4:"-"},
+	    "Tags": [${5:"-"}]
+	}
+}
+
+endsnippet
+
+snippet tag
+
+{ "Key": "${1:-}", "Value":  ${2:"--"} }
+
+endsnippet
+
+snippet vpc
+
+"${1:name}": {
+    "Type": "AWS::EC2::VPC",
+	"Properties": {
+	    "CidrBlock": ${2:"----/--"},
+	    "Tags": [${3:-}]
+	}
+}
+
+endsnippet
+
+snippet vpn-gateway
+
+"${1:vgwName}": {
+    "Type": "AWS::EC2::VPNGateway",
+	"Properties": {
+	    "Type": "ipsec.1",
+	    "Tags": [${2:"--"}]
+	}
+},
+    "AttachVpnGateway": {
+	"Type": "AWS::EC2::VPCGatewayAttachment",
+	"Properties": {
+	    "VpcId": ${3:"--"},
+	    "VpnGatewayId": { "Ref": "${4:vgwName}" }
+	}
+    }
+
+endsnippet
+
