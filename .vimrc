@@ -1,6 +1,6 @@
 "Set Shell - Needed for pathogen
 set shell=/bin/bash
-set mouse=a
+set mouse=vi
 set clipboard=unnamed
 
 runtime bundle/vim-pathogen/autoload/pathogen.vim
