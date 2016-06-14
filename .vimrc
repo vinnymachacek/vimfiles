@@ -1,5 +1,7 @@
 "Set Shell - Needed for pathogen
 set shell=/bin/bash
+set mouse=a
+set clipboard=unnamed
 
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 execute pathogen#infect()
@@ -46,15 +48,28 @@ let g:syntastic_loc_list_height=5
 
 let g:airline#extensions#syntastic#enabled = 1
 
+let g:SuperTabContextDefaultCompletionType = "<c-n>"
+let g:SuperTabDefaultCompletionType = "<c-n>"
+
+
 "Theming
 :colorscheme lucius
 :LuciusDarkLowContrast
 
 "KeyMappings
-nnoremap <F5> :call functions#ExecuteFile()<CR>
-map <C-j> :%!python -m json.tool <CR>
+"nnoremap <F5> :call functions#ExecuteFile()<CR>
+map <C-j><C-j> :%!python -m json.tool <CR>
+
+nnoremap <C-j><C-v> :call functions#ValidateFile()<CR>
+nnoremap <C-j><C-b> :call functions#CreateStackFromFile()<CR>
+nnoremap <C-j><C-u> :call functions#UpdateStackFromFile()<CR>
+nnoremap <C-j><C-p> :call functions#CreateParamsFile()<CR>
+
 
 nnoremap <silent> <C-s> :SyntasticCheck <CR>
 nmap <C-N><C-N> :set invnumber<CR>
 
 nnoremap <silent> <C-e> :lopen<CR>
+
+au BufRead,BufNewFile *.params setfiletype json
+au BufRead,BufNewFile *.params set filetype=json
