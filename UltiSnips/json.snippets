@@ -1453,3 +1453,30 @@ snippet vpn-gateway
 
 endsnippet
 
+snippet dhcp-options
+
+"${1:dhcpoptions}" : {
+    "Type" : "AWS::EC2::DHCPOptions",
+    "Properties" : {
+	"DomainName" : "${2:example.com}",
+	"DomainNameServers" : [ "${3:AmazonProvidedDNS}" ],
+	"NtpServers" : [ "10.2.5.1" ],
+	"NetbiosNameServers" : [ "10.2.5.1" ],
+	"NetbiosNodeType" : 2,
+	"Tags" : [${4:"--"}]
+    }
+}
+
+endsnippet
+
+snippet natgw
+"${1:ManagedNatGW}" :
+{
+  "Type" : "AWS::EC2::NatGateway",
+  "Properties" : {
+    "AllocationId" : {"Ref":"${2:EIPALLOC}"},
+    "SubnetId" : {"Ref": "${3:SUBNET}"}
+  }
+}
+
+endsnippet

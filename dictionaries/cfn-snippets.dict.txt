@@ -11,6 +11,7 @@ cloudfront-distribution
 cloudtrail
 cloudwatch-alarm
 dynamodb-table
+dhcp-options
 ec2-instance
 ec2-volume
 eip-vpc
