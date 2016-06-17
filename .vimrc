@@ -59,6 +59,7 @@ let g:SuperTabDefaultCompletionType = "<c-n>"
 "KeyMappings
 "nnoremap <F5> :call functions#ExecuteFile()<CR>
 map <C-j><C-j> :%!python -m json.tool <CR>
+map <C-j><C-o> :%!python ~/.vim/scripts/gen-outputs.py <CR>
 
 nnoremap <C-j><C-v> :call functions#ValidateFile()<CR>
 nnoremap <C-j><C-b> :call functions#CreateStackFromFile()<CR>
