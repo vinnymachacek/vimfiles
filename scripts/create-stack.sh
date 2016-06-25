@@ -9,8 +9,9 @@ FILEEXT="${FILE##*.}"
 
 
 aws cloudformation create-stack \
-        --stack-name "${FILENAME}-${DATE}" \
+        --stack-name "$( echo ${FILENAME}|tr -d '[:punct:]')-${DATE}" \
         --template-body file://${FILE} \
         --parameters file://${FILENAMEANDEXT}.params \
         --disable-rollback \
-        --timeout-in-minutes 10
+        --timeout-in-minutes 10 \
+        --capabilities CAPABILITY_IAM

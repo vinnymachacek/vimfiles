@@ -3,7 +3,8 @@
 DATE=$(date +%Y-%m-%d-%H%M%S)
 FILE=$( echo $1| sed 's#.params$##g')
 FILENAMEANDEXT="${FILE##*/}"
-FILENAME="${FILENAMEANDEXT%.*}"
+FILENAMEPUNCT="${FILENAMEANDEXT%.*}"
+FILENAME=$( echo ${FILENAMEPUNCT}|tr -d '[:punct:]')
 FILEPATH=$(dirname $FILE)
 FILEEXT="${FILE##*.}"
 
@@ -15,4 +16,5 @@ aws cloudformation update-stack \
         --stack-name "${STACK}" \
         --template-body file://${FILE} \
         --parameters file://${FILENAMEANDEXT}.params \
-        --no-use-previous-template 
+        --no-use-previous-template \
+        --capabilities CAPABILITY_IAM
